@@ -77,7 +77,7 @@ class Grammar:
 
 if __name__ == "__main__":
     options = {
-        "max_len": 5,
+        "max_len": 6,
         "file": "grammar.txt"
     }
     print("[Program started!]")
@@ -85,7 +85,8 @@ if __name__ == "__main__":
     try:
         g = Grammar(file=options["file"], max_len=options["max_len"])
         words = g.words
-        print("YOLO!")
+        for w in words:
+            print(w)
 
     except Exception as e:
         raise
