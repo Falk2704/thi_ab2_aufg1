@@ -1,7 +1,6 @@
 #!/usr/bin/python
-import io, re
-
-from coloredoutput import fcolors, print_colorized
+import io
+import re
 
 
 class Grammar:
@@ -44,60 +43,51 @@ class Grammar:
 
     def parse_productions(self):
         for production in self.p:
-            current = []
             matches = re.search("([^->]{1}) -> (.*)", production)
             if len(matches.groups()) == 2:
                 self.productions[matches.group(1)] = matches.group(2).split("|")
             else:
                 raise Exception("Invalid production found!")
 
-    def __init__(self, file, depth):
-        self.depth = depth
+    def __init__(self, file, max_len):
+        self.max_len = max_len
         self.v, self.t, self.p, self.s = Grammar.parse_file(Grammar.read_file(file))
         self.parse_productions()
-        #erg = self.produce_words("S", 0)
-        erg = self.gen_words("S")
-        erg = [x.replace("D", "") for x in erg]
-        erg = [int(x) for x in erg]
-        print_colorized(sorted(erg), fcolors.OKGREEN)
 
+        erg = self.gen_words("S")
+        t = self.remove_variables(erg)
+
+        print(t)
+
+    def remove_variables(self, words):
+        for each in self.v:
+            for word in words:
+                if each in word:
+                    words.remove(word)
+
+        return words
 
     def gen_words(self, start):
         retval = []
-        if len(start) <= 4:
-            for char in start:  # Durchlaufe jedes Zeichen
-                if char in self.v:  # Wenn Zeichen = Variable dann
-                    for prod in self.productions[char]:  # Erstelle instanzen für alle möglichkeiten
-                            retval.append(start.replace(char, prod))
-                            retval = retval + self.gen_words(retval[-1])
-
-        return retval
-
-    def produce_words(self, start, counter):
-        retval = []
-        for zeichen in start:
-            if zeichen in self.v:
-                for rechteseite in self.productions[zeichen]:
-                    s = start.replace(zeichen, rechteseite)
-                    retval.append(s)
-                    if(counter < 5):
-                        counter += 1
-                        retval = retval + self.produce_words(s, counter)
-                    else:
-                        break
+        if len(start) <= self.max_len:
+            for char in start:
+                if char in self.v:
+                    for prod in self.productions[char]:
+                        retval.append(start.replace(char, prod))
+                        retval.extend(self.gen_words(retval[-1]))
         return retval
 
 if __name__ == "__main__":
     options = {
-        "depth": 4,
+        "max_len": 3,
         "file": "grammar.txt"
     }
-    print_colorized("[Program started!]", fcolors.OKGREEN)
+    print("[Program started!]")
 
     try:
-        g = Grammar(file=options["file"], depth=options["depth"])
+        g = Grammar(file=options["file"], max_len=options["max_len"])
     except Exception as e:
         raise
-        #print_colorized("[Error: {}]".format(str(e)), fcolors.FAIL)
+        # print_colorized("[Error: {}]".format(str(e)), fcolors.FAIL)
     except:
         raise
