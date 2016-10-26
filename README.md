@@ -1,1 +1,1 @@
-THI: Aufgabeblatt 2 Aufgabe 1)
+# THI: Aufgabeblatt 2 Aufgabe 1)
