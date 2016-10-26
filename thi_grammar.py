@@ -77,7 +77,7 @@ class Grammar:
 
 if __name__ == "__main__":
     options = {
-        "max_len": 5,
+        "max_len": 4,
         "file": "grammar.txt"
     }
     print("[Program started!]")
