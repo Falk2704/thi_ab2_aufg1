@@ -4,7 +4,7 @@ import re
 
 
 class Grammar:
-    v, t, p, s, productions, words = [], [], [], [], {}, []
+    v, t, p, s, productions = [], [], [], [], {}
 
     @staticmethod
     def read_file(fname):
@@ -53,18 +53,16 @@ class Grammar:
         self.max_len = max_len
         self.v, self.t, self.p, self.s = Grammar.parse_file(Grammar.read_file(file))
         self.parse_productions()
-
-        erg = self.gen_words("S")
-        t = self.remove_variables(erg)
-
-        print(t)
+        self.words = self.remove_variables(self.gen_words("S"))
 
     def remove_variables(self, words):
-        for each in self.v:
-            for word in words:
-                if each in word:
-                    words.remove(word)
-
+        temp = []
+        for word in words:
+            for var in self.v:
+                if var in word:
+                    temp.append(word)
+        for w in temp:
+            words.remove(w)
         return words
 
     def gen_words(self, start):
@@ -79,13 +77,16 @@ class Grammar:
 
 if __name__ == "__main__":
     options = {
-        "max_len": 3,
+        "max_len": 5,
         "file": "grammar.txt"
     }
     print("[Program started!]")
 
     try:
         g = Grammar(file=options["file"], max_len=options["max_len"])
+        words = g.words
+        print("YOLO!")
+
     except Exception as e:
         raise
         # print_colorized("[Error: {}]".format(str(e)), fcolors.FAIL)
