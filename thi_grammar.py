@@ -77,7 +77,7 @@ class Grammar:
 
 if __name__ == "__main__":
     options = {
-        "max_len": 6,
+        "max_len": 5,
         "file": "grammar.txt"
     }
     print("[Program started!]")
@@ -89,7 +89,6 @@ if __name__ == "__main__":
             print(w)
 
     except Exception as e:
-        raise
-        # print_colorized("[Error: {}]".format(str(e)), fcolors.FAIL)
+        print("[Error: {}]".format(str(e)))
     except:
         raise
